@@ -20,7 +20,7 @@
     {% if feedback %}
     <div class="feedback-list">
         {% for item in feedback %}
-        <div class="feedback-card" data-reviewed="{{ item.reviewed }}">
+        <div class="feedback-card" data-reviewed="{{ 'true' if item.reviewed else 'false' }}">
             <div class="feedback-header">
                 <h3>Feedback #{{ item.id }}</h3>
                 <span class="status-badge {{ 'reviewed' if item.reviewed else 'unreviewed' }}">
@@ -68,22 +68,29 @@
 </section>
 
 <script>
-const filterButtons = document.querySelectorAll('.filter-button');
-const feedbackCards = document.querySelectorAll('.feedback-card');
+document.addEventListener('DOMContentLoaded', function() {
+    const filterButtons = document.querySelectorAll('.filter-button');
+    const feedbackCards = document.querySelectorAll('.feedback-card');
 
-filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        filterButtons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-        
-        const filter = this.getAttribute('data-filter');
-        
-        feedbackCards.forEach(card => {
-            if (filter === 'all' || card.getAttribute('data-reviewed') === filter) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            
+            feedbackCards.forEach(card => {
+                if (filter === 'all') {
+                    card.style.display = 'block';
+                } else {
+                    const cardReviewed = card.getAttribute('data-reviewed');
+                    if (cardReviewed === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
         });
     });
 });
