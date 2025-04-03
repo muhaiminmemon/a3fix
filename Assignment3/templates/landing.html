@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome to CSCB20{% endblock %}
+
+{% block content %}
+<section class="welcome-section">
+    <h2>Welcome to CSCB20</h2>
+    <h3>Introduction to Databases and Web Applications</h3>
+    <p class="semester">Winter 2025</p>
+</section>
+
+<section class="auth-section">
+    <div class="auth-card">
+        <h3>Please login to access course content</h3>
+        <p>All course materials and content require authentication. Please login with your credentials or register if you don't have an account.</p>
+        
+        <div class="auth-buttons">
+            <a href="{{ url_for('login') }}" class="button">Login</a>
+            <a href="{{ url_for('register') }}" class="button">Register</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

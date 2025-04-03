@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Assignments - CSCB20{% endblock %}
+
+{% block content %}
+<section class="assignments-content">
+    <h2>Assignments</h2>
+    <p>All assignments must be submitted through Markus by 11:59 PM on the due date. Please review the course policies regarding late submissions.</p>
+
+    <section class="assignments-list">
+        <div class="assignment-card">
+            <div class="assignment-header">
+                <h3 class="assignment-title">Assignment 2: Web Development</h3>
+                <div class="assignment-dates">
+                    <div class="date-item">
+                        <span class="date-label">Release</span>
+                        <span class="date-value">Mar 15</span>
+                    </div>
+                    <div class="date-item">
+                        <span class="date-label">Due</span>
+                        <span class="date-value">Mar 29</span>
+                    </div>
+                    <span class="status-badge status-active">Active</span>
+                </div>
+            </div>
+            <div class="assignment-content">
+                <div class="assignment-description">
+                    <p>In this assignment, you will design and build a responsive course website using HTML and CSS. You will implement modern web design principles, responsive layouts, and CSS-based interactive elements.</p>
+                </div>
+                <div class="assignment-actions">
+                    <a href="assignments/assignment.pdf" class="button" target="_blank">Download PDF</a>
+                    <a href="https://markus2.utsc.utoronto.ca" class="button" target="_blank">Submit on Markus</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="assignment-card">
+            <div class="assignment-header">
+                <h3 class="assignment-title">Assignment 1: Database Design</h3>
+                <div class="assignment-dates">
+                    <div class="date-item">
+                        <span class="date-label">Released</span>
+                        <span class="date-value">Feb 10</span>
+                    </div>
+                    <div class="date-item">
+                        <span class="date-label">Due</span>
+                        <span class="date-value">Feb 24</span>
+                    </div>
+                    <span class="status-badge status-past">Past</span>
+                </div>
+            </div>
+            <div class="assignment-content">
+                <div class="assignment-description">
+                    <p>In this assignment, you will design a relational database for a university system and write SQL queries to interact with your database.</p>
+                </div>
+                <div class="assignment-actions">
+                    <a href="assignments/assignment.pdf" class="button" target="_blank">Download PDF</a>
+                    <a href="https://markus2.utsc.utoronto.ca" class="button" target="_blank">Submit on Markus</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="assignment-card">
+            <div class="assignment-header">
+                <h3 class="assignment-title">Assignment 3: TBD</h3>
+                <div class="assignment-dates">
+                    <div class="date-item">
+                        <span class="date-label">Release</span>
+                        <span class="date-value">TBD</span>
+                    </div>
+                    <div class="date-item">
+                        <span class="date-label">Due</span>
+                        <span class="date-value">TBD</span>
+                    </div>
+                    <span class="status-badge status-upcoming">TBD</span>
+                </div>
+            </div>
+            <div class="assignment-content">
+                <div class="assignment-description">
+                    <p>TBD</p>
+                </div>
+                <div class="assignment-actions">
+                    <span class="button" style="opacity: 0.5; cursor: not-allowed;">Download PDF (TBD)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

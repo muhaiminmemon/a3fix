@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Marks - CSCB20{% endblock %}
+
+{% block content %}
+<section class="marks-header">
+    <h2>Student Marks</h2>
+    <p>View all student marks for the course.</p>
+</section>
+
+<section class="marks-overview">
+    <div class="marks-table-container">
+        <table class="marks-table">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    {% for assignment in assignments %}
+                    <th>{{ assignment.name }} ({{ assignment.max_mark }})</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for student_mark in student_marks %}
+                <tr>
+                    <td>{{ student_mark.student.name }}</td>
+                    {% for assignment in assignments %}
+                    <td>
+                        {% if assignment.id in student_mark.marks %}
+                        {{ student_mark.marks[assignment.id].mark }} ({{ "%.1f"|format(student_mark.marks[assignment.id].percentage) }}%)
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section class="marks-actions">
+    <a href="{{ url_for('enter_marks') }}" class="button">Enter/Update Marks</a>
+</section>
+{% endblock %}

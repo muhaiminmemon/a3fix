@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CSCB20{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="light-mode">
+    <input type="checkbox" id="mobile-menu-toggle">
+    <header class="sticky-header">
+        <div class="header-content">
+            <h1>CSCB20</h1>
+            <nav>
+                {% if session.get('user_id') %}
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('syllabus') }}">Syllabus</a></li>
+                    <li><a href="{{ url_for('lectures') }}">Lectures</a></li>
+                    <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                    <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                    <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
+                    <li><a href="{{ url_for('team') }}">Course Team</a></li>
+                    {% if session.get('user_type') == 'student' %}
+                    <li><a href="{{ url_for('student_marks') }}">My Marks</a></li>
+                    <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
+                    {% elif session.get('user_type') == 'instructor' %}
+                    <li><a href="{{ url_for('instructor_marks') }}">Student Marks</a></li>
+                    <li><a href="{{ url_for('instructor_feedback') }}">Feedback</a></li>
+                    <li><a href="{{ url_for('instructor_remark_requests') }}">Remark Requests</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                </ul>
+                {% else %}
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('syllabus') }}">Syllabus</a></li>
+                    <li><a href="{{ url_for('lectures') }}">Lectures</a></li>
+                    <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                    <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                    <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
+                    <li><a href="{{ url_for('team') }}">Course Team</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                </ul>
+                {% endif %}
+            </nav>
+        </div>
+        <label for="mobile-menu-toggle" class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+    </header>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 CSCB20 Course Website. All rights reserved.</p>
+        <p>Designed by the CSCB20 Course Team</p>
+        <p>Visit the <a href="https://www.cs.utoronto.ca/" target="_blank">Faculty of Computer Science at UofT</a></p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}Student Feedback - CSCB20{% endblock %}
+
+{% block content %}
+<section class="feedback-header">
+    <h2>Student Feedback</h2>
+    <p>View anonymous feedback submitted by students about your teaching.</p>
+</section>
+
+<section class="feedback-content">
+    <div id="update-message"></div>
+    
+    <div class="filter-buttons">
+        <button class="filter-button active" data-filter="all">All Feedback</button>
+        <button class="filter-button" data-filter="false">Unreviewed</button>
+        <button class="filter-button" data-filter="true">Reviewed</button>
+    </div>
+
+    {% if feedback %}
+    <div class="feedback-list">
+        {% for item in feedback %}
+        <div class="feedback-card" data-reviewed="{{ item.reviewed }}">
+            <div class="feedback-header">
+                <h3>Feedback #{{ item.id }}</h3>
+                <span class="status-badge {{ 'reviewed' if item.reviewed else 'unreviewed' }}">
+                    {{ 'Reviewed' if item.reviewed else 'Unreviewed' }}
+                </span>
+            </div>
+            <div class="feedback-body">
+                <div class="feedback-section">
+                    <h3>Teaching Feedback</h3>
+                    <p>{{ item.teaching_feedback }}</p>
+                </div>
+                <div class="feedback-section">
+                    <h3>Teaching Improvement Suggestions</h3>
+                    <p>{{ item.teaching_improvement }}</p>
+                </div>
+                <div class="feedback-section">
+                    <h3>Lab Feedback</h3>
+                    <p>{{ item.lab_feedback }}</p>
+                </div>
+                <div class="feedback-section">
+                    <h3>Lab Improvement Suggestions</h3>
+                    <p>{{ item.lab_improvement }}</p>
+                </div>
+                <div class="feedback-date">
+                    Submitted: {{ item.created_at.strftime('%Y-%m-%d %H:%M') }}
+                </div>
+            </div>
+            <div class="feedback-actions">
+                {% if not item.reviewed %}
+                <form method="POST" action="{{ url_for('mark_feedback_reviewed', feedback_id=item.id) }}">
+                    <button type="submit" class="button">Mark as Reviewed</button>
+                </form>
+                {% else %}
+                <span class="reviewed-badge">Reviewed</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-feedback">
+        <p>No feedback has been submitted yet.</p>
+    </div>
+    {% endif %}
+</section>
+
+<script>
+const filterButtons = document.querySelectorAll('.filter-button');
+const feedbackCards = document.querySelectorAll('.feedback-card');
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        const filter = this.getAttribute('data-filter');
+        
+        feedbackCards.forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-reviewed') === filter) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

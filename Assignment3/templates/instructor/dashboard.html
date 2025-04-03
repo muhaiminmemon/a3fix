@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Instructor Dashboard - CSCB20{% endblock %}
+
+{% block content %}
+<section class="dashboard-header">
+    <h2>Instructor Dashboard</h2>
+    <p class="welcome-message">Welcome, {{ session.get('name') }}!</p>
+</section>
+
+<section class="dashboard-cards">
+    <div class="dashboard-card">
+        <h3>Student Marks</h3>
+        <p>View and manage all student marks for the course.</p>
+        <a href="{{ url_for('instructor_marks') }}" class="button">View Marks</a>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Enter Marks</h3>
+        <p>Enter or update marks for students.</p>
+        <a href="{{ url_for('enter_marks') }}" class="button">Enter Marks</a>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Remark Requests</h3>
+        <p>View and respond to student remark requests.</p>
+        <a href="{{ url_for('view_remark_requests') }}" class="button">View Requests</a>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Student Feedback</h3>
+        <p>View anonymous feedback from students.</p>
+        <a href="{{ url_for('view_feedback') }}" class="button">View Feedback</a>
+    </div>
+    
+    <div class="dashboard-card">
+        <h3>Course Resources</h3>
+        <p>Access lecture notes, lab materials, and other course resources.</p>
+        <div class="resource-links">
+            <a href="{{ url_for('lectures') }}">Lecture Notes</a>
+            <a href="{{ url_for('labs') }}">Lab Materials</a>
+            <a href="{{ url_for('assignments') }}">Assignments</a>
+            <a href="{{ url_for('syllabus') }}">Syllabus</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

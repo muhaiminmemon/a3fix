@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Enter Marks - CSCB20{% endblock %}
+
+{% block content %}
+<section class="marks-header">
+    <h2>Enter Student Marks</h2>
+    <p>Update or enter new marks for students.</p>
+</section>
+
+<section class="enter-marks-section">
+    <div class="marks-card">
+        <form method="POST" action="{{ url_for('enter_marks') }}" class="marks-form">
+            <div class="form-group">
+                <label for="student">Select Student:</label>
+                <select id="student" name="student_id" class="form-control" required>
+                    <option value="" disabled selected>Choose a student</option>
+                    {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="assignment">Select Assignment:</label>
+                <select id="assignment" name="assignment_id" class="form-control" required>
+                    <option value="" disabled selected>Choose an assignment</option>
+                    {% for assignment in assignments %}
+                    <option value="{{ assignment.id }}">{{ assignment.name }} ({{ assignment.type|capitalize }}, Max: {{ assignment.max_mark }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="mark">Mark:</label>
+                <input type="number" id="mark" name="mark" class="form-control" step="0.1" min="0" required>
+            </div>
+            
+            <div class="form-group">
+                <button type="submit" class="button">Save Mark</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="marks-actions">
+    <a href="{{ url_for('instructor_marks') }}" class="button secondary-button">View All Marks</a>
+</section>
+{% endblock %}

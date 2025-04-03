@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block title %}Labs - CSCB20{% endblock %}
+
+{% block head %}
+<style>
+    /* Labs styles */
+    .labs-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+    
+    .lab-card {
+        background-color: var(--card-bg-color);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .lab-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .lab-number {
+        color: var(--accent-color);
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    
+    .lab-title {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+    }
+    
+    .lab-date {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+    
+    .lab-description {
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .lab-actions {
+        margin-top: auto;
+    }
+
+    /* Simple Dark Mode Toggle using CSS only */
+    /* Hide the checkbox but keep it functional */
+    #dark-mode-toggle {
+        display: none;
+    }
+
+    /* Style the moon emoji label */
+    .theme-toggle label {
+        cursor: pointer;
+        font-size: 1.5rem;
+        user-select: none;
+    }
+
+    /* When checkbox is checked, apply dark mode to the body */
+    #dark-mode-toggle:checked ~ body {
+        --primary-color: #ffffff;
+        --secondary-color: #cccccc;
+        --accent-color: #999999;
+        --text-color: #ffffff;
+        --background-color: #121212;
+        --card-bg-color: #1e1e1e;
+        --border-color: #333333;
+        --header-bg: #000000;
+        --header-text: #ffffff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="labs-content">
+    <h2>Labs</h2>
+    <p>Welcome to CSCB20 Labs! Each week, you'll participate in hands-on practical sessions that reinforce the concepts covered in lectures. Labs are designed to give you direct experience with databases and web development technologies. You'll work on exercises ranging from SQL queries to building web applications, with teaching assistants available to help guide you through the material. Labs are an essential part of your learning and contribute to your final grade. Remember to come prepared by reviewing the lecture material beforehand.</p>
+
+    <section class="labs-list">
+        <div class="lab-card">
+            <div class="lab-number">Lab 01</div>
+            <h3 class="lab-title">Introduction to Course Tools</h3>
+            <div class="lab-date">Learn to set up and use essential course tools including MySQL, Python, and development environments.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 02</div>
+            <h3 class="lab-title">Relational Algebra Practice</h3>
+            <div class="lab-date">Practice writing and evaluating relational algebra expressions for database queries.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 03</div>
+            <h3 class="lab-title">Introduction to SQL</h3>
+            <div class="lab-date">Learn basic SQL commands including SELECT, INSERT, UPDATE, and DELETE with hands-on exercises.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 04</div>
+            <h3 class="lab-title">Advanced SQL Queries</h3>
+            <div class="lab-date">Work with JOIN operations, aggregate functions, and GROUP BY clauses in complex SQL queries.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 05</div>
+            <h3 class="lab-title">SQL Subqueries and Web Basics</h3>
+            <div class="lab-date">Master nested queries in SQL and get introduced to basic web development concepts.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 06</div>
+            <h3 class="lab-title">HTML and CSS Fundamentals</h3>
+            <div class="lab-date">Build your first web pages using HTML structure and CSS styling techniques.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 07</div>
+            <h3 class="lab-title">Responsive Design and JavaScript</h3>
+            <div class="lab-date">Create responsive layouts and add interactivity to web pages using JavaScript.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 08</div>
+            <h3 class="lab-title">Flask and Database Integration</h3>
+            <div class="lab-date">Connect Flask web applications to MySQL databases and handle data operations.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+
+        <div class="lab-card">
+            <div class="lab-number">Lab 09</div>
+            <h3 class="lab-title">Authentication and Sessions</h3>
+            <div class="lab-date">Implement user authentication and manage session data in web applications.</div>
+            <div class="lab-actions">
+                <a href="labs/labs.pdf" target="_blank" class="button">Download Lab</a>
+            </div>
+        </div>
+    </section>
+</section>
+{% endblock %}

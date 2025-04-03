@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Remark Requests - CSCB20{% endblock %}
+
+{% block content %}
+<section class="remark-header">
+    <h2>Remark Requests</h2>
+    <p>View and manage student remark requests for assignments, labs, and exams.</p>
+</section>
+
+<section class="remark-content">
+    <div id="update-message"></div>
+    
+    <div class="filter-buttons">
+        <button class="filter-button active" data-filter="all">All Requests</button>
+        <button class="filter-button" data-filter="pending">Pending</button>
+        <button class="filter-button" data-filter="approved">Approved</button>
+        <button class="filter-button" data-filter="rejected">Rejected</button>
+    </div>
+
+    {% if requests %}
+    <div class="remark-requests">
+        {% for request in requests %}
+        <div class="remark-card" data-status="{{ request.status }}">
+            <div class="remark-info">
+                <div class="student-name">{{ request.student_name }}</div>
+                <div class="mark-info">{{ request.assignment_name }} - {{ request.mark }}/{{ request.max_mark }}</div>
+                <div class="request-date">Submitted: {{ request.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                <div class="request-reason">
+                    <h4>Reason for Request:</h4>
+                    <p>{{ request.reason }}</p>
+                </div>
+            </div>
+            <div class="remark-actions">
+                <div class="status-badge {{ request.status }}">
+                    {{ request.status|capitalize }}
+                </div>
+                {% if request.status != 'approved' %}
+                <form method="POST" action="{{ url_for('update_remark_request', request_id=request.id) }}">
+                    <input type="hidden" name="status" value="approved">
+                    <button type="submit" class="button approve-button">Approve Request</button>
+                </form>
+                {% endif %}
+                
+                {% if request.status != 'rejected' %}
+                <form method="POST" action="{{ url_for('update_remark_request', request_id=request.id) }}">
+                    <input type="hidden" name="status" value="rejected">
+                    <button type="submit" class="button reject-button">Reject Request</button>
+                </form>
+                {% endif %}
+                
+                {% if request.status != 'pending' %}
+                <form method="POST" action="{{ url_for('update_remark_request', request_id=request.id) }}">
+                    <input type="hidden" name="status" value="pending">
+                    <button type="submit" class="button secondary-button">Reset to Pending</button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-requests">
+        <p>No remark requests have been submitted yet.</p>
+    </div>
+    {% endif %}
+</section>
+
+<script>
+const filterButtons = document.querySelectorAll('.filter-button');
+const remarkCards = document.querySelectorAll('.remark-card');
+
+filterButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        const filter = this.getAttribute('data-filter');
+        
+        remarkCards.forEach(card => {
+            if (filter === 'all' || card.getAttribute('data-status') === filter) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

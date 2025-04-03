@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Course Team - CSCB20{% endblock %}
+
+{% block content %}
+<section class="team-header">
+    <h2>Course Team</h2>
+    <p>Meet the instructors and teaching assistants for CSCB20. Feel free to reach out to us with any questions about the course material.</p>
+</section>
+
+<section class="team-section">
+    <h3>Instructors</h3>
+    <div class="team-members">
+        <div class="team-card">
+            <div class="team-card-header">
+                <div class="team-img" style="background-image: url('{{ url_for('static', filename='images/prof.png') }}'); background-size: cover; background-position: center;"></div>
+                <h4 class="team-name">Purva Gawde</h4>
+                <div class="team-role">Instructor</div>
+            </div>
+            <div class="team-card-body">
+                <div class="team-info">
+                    <p><span class="info-label">Email:</span> purva.gawde@utoronto.ca</p>
+                    <p><span class="info-label">Office:</span> IA 4056</p>
+                    <p><span class="info-label">Office Hours:</span> Monday 11:00-12:00</p>
+                </div>
+                <div class="team-contact">
+                    <a href="mailto:purva.gawde@utoronto.ca" class="contact-button">Email</a>
+                    <a href="https://piazza.com" class="contact-button">Piazza</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="team-section">
+    <h3>Teaching Assistants</h3>
+    <div class="team-members">
+        <div class="team-card">
+            <div class="team-card-header">
+                <div class="team-img"></div>
+                <h4 class="team-name">Kevin Zhang</h4>
+                <div class="team-role">Teaching Assistant</div>
+            </div>
+            <div class="team-card-body">
+                <div class="team-info">
+                    <p><span class="info-label">Email:</span> kevin.zhang@mail.utoronto.ca</p>
+                    <p><span class="info-label">Office:</span> IC 404</p>
+                    <p><span class="info-label">Office Hours:</span> Tuesday 15:00-17:00</p>
+                </div>
+                <div class="team-contact">
+                    <a href="mailto:ta1@mail.utoronto.ca" class="contact-button">Email</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-card">
+            <div class="team-card-header">
+                <div class="team-img"></div>
+                <h4 class="team-name">Orhan Cangurel</h4>
+                <div class="team-role">Teaching Assistant</div>
+            </div>
+            <div class="team-card-body">
+                <div class="team-info">
+                    <p><span class="info-label">Email:</span> orhan.cangurel@mail.utoronto.ca</p>
+                    <p><span class="info-label">Office:</span> IA 4042</p>
+                    <p><span class="info-label">Office Hours:</span> Wednesday 12:00-13:00</p>
+                </div>
+                <div class="team-contact">
+                    <a href="mailto:ta2@mail.utoronto.ca" class="contact-button">Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

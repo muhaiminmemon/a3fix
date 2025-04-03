@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}CSCB20 - Introduction to Databases and Web Applications{% endblock %}
+
+{% block content %}
+<section class="welcome-section">
+    <h2>Welcome to CSCB20</h2>
+    <h3>Introduction to Databases and Web Applications</h3>
+    <p class="semester">Winter 2025</p>
+</section>
+
+<section class="course-description">
+    <h2>Course Description</h2>
+    <p>This course provides a hands-on introduction to databases and web application development. You will gain both theoretical knowledge and practical skills to build a solid foundation in these areas.</p>
+    
+    <div class="course-details">
+        <div class="detail-item">
+            <h3>What You'll Learn: Databases</h3>
+            <ul>
+                <li>Key terminology and practical applications</li>
+                <li>Creating, querying, and updating databases</li>
+                <li>Designing databases using the entity-relationship model</li>
+            </ul>
+        </div>
+        
+        <div class="detail-item">
+            <h3>What You'll Learn: Web Development</h3>
+            <ul>
+                <li>Building static and interactive web documents</li>
+                <li>Setting up web servers and generating dynamic, server-side content</li>
+                <li>Developing web applications integrated with databases</li>
+            </ul>
+        </div>
+        
+        <div class="detail-item">
+            <h3>Syllabus</h3>
+            <p><a href="{{ url_for('syllabus') }}" class="button">View Full Syllabus</a></p>
+        </div>
+    </div>
+</section>
+
+<section class="instructor-section">
+    <h2>Instructor</h2>
+    <div class="instructor-card">
+        <div class="instructor-img" style="background-image: url('{{ url_for('static', filename='images/prof.png') }}'); background-size: cover; background-position: center;"></div>
+        <div class="instructor-info">
+            <h3>Purva Gawde</h3>
+            <ul>
+                <li><span>Email:</span> <a href="mailto:purva.gawde@utoronto.ca">purva.gawde@utoronto.ca</a></li>
+                <li><span>Office:</span> IA 4056</li>
+                <li><span>Office Hours:</span> Monday 11:00 to 12:00</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="announcements">
+    <h2>Announcements</h2>
+    <div class="announcement-card">
+        <div class="announcement-date">March 8, 2025</div>
+        <h3>Midterm Marks</h3>
+        <p>Hey everyone! Just a heads up that the faculty has decided that everyone who failed the midterm will get a 100 in the course!.</p>
+    </div>
+    <div class="announcement-card">
+        <div class="announcement-date">March 5, 2025</div>
+        <h3>Something About Assignment</h3>
+        <p>Please do not come to office hours to ask questions about the assignment that can be answered by simply reading the provided document!
+        </p>
+    </div>
+    <div class="announcement-card">
+        <div class="announcement-date">March 1, 2025</div>
+        <h3>Room Update</h3>
+        <p>Hi class! Just wanted to let you know that some stuff happened and now other stuff needs to happen. All these announcements are a concoction of randomness!.</p>
+    </div>
+</section>
+{% endblock %}

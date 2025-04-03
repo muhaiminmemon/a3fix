@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block title %}My Marks - CSCB20{% endblock %}
+
+{% block content %}
+<section class="marks-header">
+    <h2>My Marks</h2>
+    <p>View your marks and submit remark requests for assignments, labs, and exams.</p>
+</section>
+
+<section class="marks-content">
+    <div class="marks-section">
+        <h3>Assignments</h3>
+        {% if marks_by_type['assignments'] %}
+        <div class="marks-table-container">
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th>Assignment</th>
+                        <th>Mark</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks_by_type['assignments'] %}
+                    <tr>
+                        <td>{{ mark.name }}</td>
+                        <td>{{ mark.mark }}/{{ mark.max_mark }}</td>
+                        <td>{{ "%.1f"|format(mark.percentage) }}%</td>
+                        <td>
+                            {% if mark.has_remark_request %}
+                                <span class="remark-status {{ mark.remark_status }}">{{ mark.remark_status|capitalize }}</span>
+                            {% else %}
+                                <span class="status-badge completed">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not mark.has_remark_request %}
+                            <button class="button small-button" onclick="openRemarkModal('{{ mark.assignment_id }}')">Request Remark</button>
+                            {% else %}
+                            <button class="button small-button" disabled>Request Submitted</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-marks">No assignment marks available.</div>
+        {% endif %}
+    </div>
+
+    <div class="marks-section">
+        <h3>Labs</h3>
+        {% if marks_by_type['labs'] %}
+        <div class="marks-table-container">
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th>Lab</th>
+                        <th>Mark</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks_by_type['labs'] %}
+                    <tr>
+                        <td>{{ mark.name }}</td>
+                        <td>{{ mark.mark }}/{{ mark.max_mark }}</td>
+                        <td>{{ "%.1f"|format(mark.percentage) }}%</td>
+                        <td>
+                            {% if mark.has_remark_request %}
+                                <span class="remark-status {{ mark.remark_status }}">{{ mark.remark_status|capitalize }}</span>
+                            {% else %}
+                                <span class="status-badge completed">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not mark.has_remark_request %}
+                            <button class="button small-button" onclick="openRemarkModal('{{ mark.assignment_id }}')">Request Remark</button>
+                            {% else %}
+                            <button class="button small-button" disabled>Request Submitted</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-marks">No lab marks available.</div>
+        {% endif %}
+    </div>
+
+    <div class="marks-section">
+        <h3>Midterm</h3>
+        {% if marks_by_type['midterm'] %}
+        <div class="marks-table-container">
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Mark</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks_by_type['midterm'] %}
+                    <tr>
+                        <td>{{ mark.name }}</td>
+                        <td>{{ mark.mark }}/{{ mark.max_mark }}</td>
+                        <td>{{ "%.1f"|format(mark.percentage) }}%</td>
+                        <td>
+                            {% if mark.has_remark_request %}
+                                <span class="remark-status {{ mark.remark_status }}">{{ mark.remark_status|capitalize }}</span>
+                            {% else %}
+                                <span class="status-badge completed">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not mark.has_remark_request %}
+                            <button class="button small-button" onclick="openRemarkModal('{{ mark.assignment_id }}')">Request Remark</button>
+                            {% else %}
+                            <button class="button small-button" disabled>Request Submitted</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-marks">No midterm marks available.</div>
+        {% endif %}
+    </div>
+
+    <div class="marks-section">
+        <h3>Final Exam</h3>
+        {% if marks_by_type['final'] %}
+        <div class="marks-table-container">
+            <table class="marks-table">
+                <thead>
+                    <tr>
+                        <th>Exam</th>
+                        <th>Mark</th>
+                        <th>Percentage</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks_by_type['final'] %}
+                    <tr>
+                        <td>{{ mark.name }}</td>
+                        <td>{{ mark.mark }}/{{ mark.max_mark }}</td>
+                        <td>{{ "%.1f"|format(mark.percentage) }}%</td>
+                        <td>
+                            {% if mark.has_remark_request %}
+                                <span class="remark-status {{ mark.remark_status }}">{{ mark.remark_status|capitalize }}</span>
+                            {% else %}
+                                <span class="status-badge completed">Completed</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if not mark.has_remark_request %}
+                            <button class="button small-button" onclick="openRemarkModal('{{ mark.assignment_id }}')">Request Remark</button>
+                            {% else %}
+                            <button class="button small-button" disabled>Request Submitted</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-marks">No final exam marks available.</div>
+        {% endif %}
+    </div>
+</section>
+
+<div id="remarkModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeRemarkModal()">&times;</span>
+        <h3>Submit Remark Request</h3>
+        <form id="remarkForm" method="POST" action="{{ url_for('submit_remark_request') }}">
+            <input type="hidden" id="assignment_id" name="assignment_id">
+            <div class="form-group">
+                <label for="reason">Reason for Remark Request:</label>
+                <textarea id="reason" name="reason" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="button">Submit Request</button>
+        </form>
+    </div>
+</div>
+
+<script>
+const modal = document.getElementById('remarkModal');
+const assignmentIdInput = document.getElementById('assignment_id');
+
+function openRemarkModal(assignmentId) {
+    assignmentIdInput.value = assignmentId;
+    modal.style.display = 'block';
+}
+
+function closeRemarkModal() {
+    modal.style.display = 'none';
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        closeRemarkModal();
+    }
+}
+</script>
+{% endblock %}
