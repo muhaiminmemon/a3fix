@@ -16,15 +16,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 
-# Database Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     name = db.Column(db.String(100), nullable=False)
-    role = db.Column(db.String(20), nullable=False)  # 'student' or 'instructor'
+    role = db.Column(db.String(20), nullable=False)
     
-    # Relationships
     marks = db.relationship('Mark', backref='student', lazy=True)
     remark_requests = db.relationship('RemarkRequest', backref='student', lazy=True)
     
@@ -37,7 +35,6 @@ class Assignment(db.Model):
     type = db.Column(db.String(20), nullable=False) 
     max_mark = db.Column(db.Float, nullable=False)
     
-    # Relationships
     marks = db.relationship('Mark', backref='assignment', lazy=True)
     remark_requests = db.relationship('RemarkRequest', backref='assignment', lazy=True)
     
@@ -77,7 +74,6 @@ class Feedback(db.Model):
     def __repr__(self):
         return f'<Feedback {self.id}>'
 
-# Helper function to check if user is logged in
 def login_required(route_function):
     def wrapper(*args, **kwargs):
         if 'user_id' not in session:
@@ -88,16 +84,12 @@ def login_required(route_function):
     wrapper.__name__ = route_function.__name__
     return wrapper
 
-# Route for the landing page (accessible without login)
 @app.route('/')
 def home():
     if 'user_id' not in session:
-        # Show landing page for non-logged-in users
         return render_template('landing.html')
-    # Show regular home page for logged-in users
     return render_template('index.html')
 
-# Routes that require login
 @app.route('/lectures')
 @login_required
 def lectures():
@@ -159,13 +151,11 @@ def register():
         name = request.form.get('name')
         role = request.form.get('role')
         
-        # Check if username already exists
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash('Username already exists. Please choose another one.', 'error')
             return redirect(url_for('register'))
         
-        # Create new user with bcrypt hashed password
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         new_user = User(username=username, password=hashed_password, name=name, role=role)
         
@@ -182,49 +172,45 @@ def logout():
     session.clear()
     return redirect(url_for('home'))
 
-# Anonymous feedback page (requires login)
 @app.route('/feedback', methods=['GET', 'POST'])
 @login_required
 def feedback():
-    # Fetch all instructors for the dropdown menu
     instructors = User.query.filter_by(role='instructor').all()
     
-    if request.method == 'POST' and session['role'] == 'student':
+    if request.method == 'POST':
         instructor_id = request.form.get('instructor_id')
         teaching_feedback = request.form.get('teaching_feedback')
         teaching_improvement = request.form.get('teaching_improvement')
         lab_feedback = request.form.get('lab_feedback')
         lab_improvement = request.form.get('lab_improvement')
         
-        # Validate inputs
         if not all([instructor_id, teaching_feedback, teaching_improvement, lab_feedback, lab_improvement]):
             flash('Please fill out all fields in the feedback form.', 'error')
             return redirect(url_for('feedback'))
         
-        # Ensure the selected instructor exists
-        instructor = User.query.filter_by(id=instructor_id, role='instructor').first()
-        if not instructor:
-            flash('Selected instructor is not valid.', 'error')
+        try:
+            instructor_id = int(instructor_id)
+            
+            new_feedback = Feedback(
+                instructor_id=instructor_id,
+                teaching_feedback=teaching_feedback,
+                teaching_improvement=teaching_improvement,
+                lab_feedback=lab_feedback,
+                lab_improvement=lab_improvement
+            )
+            
+            db.session.add(new_feedback)
+            db.session.commit()
+            
+            flash('Your feedback has been submitted successfully! It will be reviewed by the instructor.', 'success')
             return redirect(url_for('feedback'))
-        
-        # Create the feedback entry
-        new_feedback = Feedback(
-            instructor_id=instructor_id,
-            teaching_feedback=teaching_feedback,
-            teaching_improvement=teaching_improvement,
-            lab_feedback=lab_feedback,
-            lab_improvement=lab_improvement
-        )
-        
-        db.session.add(new_feedback)
-        db.session.commit()
-        
-        flash('Your feedback has been submitted successfully! It will be reviewed by the instructor.', 'success')
-        return redirect(url_for('feedback'))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred while submitting your feedback: {str(e)}', 'error')
+            return redirect(url_for('feedback'))
     
     return render_template('feedback.html', instructors=instructors)
 
-# Student routes (require student login)
 @app.route('/students/dashboard')
 @login_required
 def student_dashboard():
@@ -244,7 +230,6 @@ def student_marks():
     student_id = session['user_id']
     marks = Mark.query.filter_by(student_id=student_id).all()
     
-    # Create a dictionary to organize marks by assignment type
     marks_by_type = {
         'assignments': [],
         'labs': [],
@@ -293,7 +278,6 @@ def submit_remark_request():
     assignment_id = request.form.get('assignment_id')
     reason = request.form.get('reason')
     
-    # Check if a remark request already exists
     existing_request = RemarkRequest.query.filter_by(
         student_id=student_id,
         assignment_id=assignment_id
@@ -322,7 +306,6 @@ def submit_remark_request():
     
     return redirect(url_for('student_marks'))
 
-# Instructor routes (require instructor login)
 @app.route('/instructor/dashboard')
 @login_required
 def instructor_dashboard():
@@ -375,7 +358,6 @@ def enter_marks():
         assignment_id = request.form.get('assignment_id')
         mark = float(request.form.get('mark'))
         
-        # Check if a mark already exists
         existing_mark = Mark.query.filter_by(
             student_id=student_id,
             assignment_id=assignment_id
@@ -446,7 +428,6 @@ def update_remark_request(request_id):
         flash('Remark request not found.', 'error')
         return redirect(url_for('view_remark_requests'))
         
-    # Update the status regardless of current status
     remark_request.status = status
     
     db.session.commit()
@@ -461,10 +442,8 @@ def view_feedback():
         flash('Please log in as an instructor to access this page.', 'error')
         return redirect(url_for('login'))
     
-    # Get the current instructor's ID
     instructor_id = session['user_id']
     
-    # Fetch only feedback intended for this instructor
     feedback = Feedback.query.filter_by(instructor_id=instructor_id).order_by(Feedback.created_at.desc()).all()
     
     return render_template('instructor/feedback.html', feedback=feedback)
@@ -476,10 +455,8 @@ def mark_feedback_reviewed(feedback_id):
         flash('Please log in as an instructor to access this page.', 'error')
         return redirect(url_for('login'))
     
-    # Get the current instructor's ID
     instructor_id = session['user_id']
     
-    # Get the feedback and ensure it belongs to this instructor
     feedback = Feedback.query.filter_by(id=feedback_id, instructor_id=instructor_id).first()
     
     if not feedback:
@@ -505,6 +482,14 @@ def submit_remark():
     if not assignment_id or not reason:
         return jsonify({'success': False, 'message': 'Missing required fields'})
     
+    existing_request = RemarkRequest.query.filter_by(
+        student_id=session['user_id'],
+        assignment_id=assignment_id
+    ).first()
+    
+    if existing_request:
+        return jsonify({'success': False, 'message': 'You have already submitted a remark request for this assignment'})
+    
     new_request = RemarkRequest(
         student_id=session['user_id'],
         assignment_id=assignment_id,
@@ -515,7 +500,7 @@ def submit_remark():
     try:
         db.session.add(new_request)
         db.session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'Remark request submitted successfully'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
@@ -547,7 +532,7 @@ def submit_feedback():
     try:
         db.session.add(new_feedback)
         db.session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'Feedback submitted successfully'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
@@ -590,7 +575,7 @@ def update_mark():
     
     try:
         db.session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'Mark updated successfully'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
@@ -619,7 +604,7 @@ def update_remark_status():
     
     try:
         db.session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'Remark status updated successfully'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
@@ -647,17 +632,15 @@ def mark_feedback_reviewed_dynamic():
     
     try:
         db.session.commit()
-        return jsonify({'success': True})
+        return jsonify({'success': True, 'message': 'Feedback marked as reviewed'})
     except Exception as e:
         db.session.rollback()
         return jsonify({'success': False, 'message': str(e)})
 
-# Initialize the database
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         
-        # Add test users if they don't exist
         if not User.query.filter_by(username='student1').first():
             db.session.add(User(
                 username='student1',
@@ -690,7 +673,6 @@ if __name__ == '__main__':
                 role='instructor'
             ))
         
-        # Add sample assignments if they don't exist
         if not Assignment.query.filter_by(name='Assignment 1').first():
             db.session.add(Assignment(
                 name='Assignment 1',

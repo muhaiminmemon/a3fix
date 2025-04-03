@@ -1,4 +1,3 @@
-// Dynamic form submission for remark requests
 function submitRemarkRequest(assignmentId) {
     const reason = document.getElementById(`remark-reason-${assignmentId}`).value;
     if (!reason.trim()) {
@@ -19,7 +18,6 @@ function submitRemarkRequest(assignmentId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the UI
             const remarkSection = document.getElementById(`remark-section-${assignmentId}`);
             remarkSection.innerHTML = `
                 <div class="alert alert-success">
@@ -38,7 +36,6 @@ function submitRemarkRequest(assignmentId) {
     });
 }
 
-// Dynamic form submission for feedback
 function submitFeedback() {
     const formData = {
         instructor_id: document.getElementById('instructor-select').value,
@@ -48,7 +45,6 @@ function submitFeedback() {
         lab_improvement: document.getElementById('lab-improvement').value
     };
 
-    // Validate form
     if (!formData.instructor_id || !formData.teaching_feedback || !formData.teaching_improvement || 
         !formData.lab_feedback || !formData.lab_improvement) {
         alert('Please fill out all fields in the feedback form');
@@ -65,14 +61,18 @@ function submitFeedback() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Clear form and show success message
-            document.getElementById('feedback-form').reset();
+            document.getElementById('feedbackForm').reset();
             const feedbackContainer = document.getElementById('feedback-container');
-            feedbackContainer.innerHTML = `
-                <div class="alert alert-success">
-                    Your feedback has been submitted successfully!
-                </div>
-            `;
+            if (feedbackContainer) {
+                feedbackContainer.innerHTML = `
+                    <div class="alert alert-success">
+                        Your feedback has been submitted successfully!
+                    </div>
+                `;
+            } else {
+                alert('Feedback submitted successfully!');
+                window.location.reload();
+            }
         } else {
             alert('Failed to submit feedback: ' + data.message);
         }
@@ -83,7 +83,6 @@ function submitFeedback() {
     });
 }
 
-// Dynamic update of marks by instructor
 function updateMark(studentId, assignmentId) {
     const mark = document.getElementById(`mark-${studentId}-${assignmentId}`).value;
     
@@ -101,14 +100,12 @@ function updateMark(studentId, assignmentId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the UI
             const markCell = document.getElementById(`mark-cell-${studentId}-${assignmentId}`);
             markCell.innerHTML = `
                 <span class="mark-value">${mark}</span>
                 <span class="badge badge-success">Updated</span>
             `;
             
-            // Show success message
             const messageDiv = document.getElementById('update-message');
             messageDiv.innerHTML = '<div class="alert alert-success">Marks updated successfully!</div>';
             setTimeout(() => {
@@ -124,7 +121,6 @@ function updateMark(studentId, assignmentId) {
     });
 }
 
-// Dynamic update of remark request status
 function updateRemarkStatus(requestId, newStatus) {
     fetch('/update-remark-status', {
         method: 'POST',
@@ -139,31 +135,23 @@ function updateRemarkStatus(requestId, newStatus) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Find the remark card
             const remarkCard = document.querySelector(`.remark-card[data-request-id="${requestId}"]`);
             if (remarkCard) {
-                // Remove old status classes
                 remarkCard.classList.remove('pending', 'approved', 'rejected');
-                // Add new status class
                 remarkCard.classList.add(newStatus.toLowerCase());
                 
-                // Update status badge
                 const statusBadge = remarkCard.querySelector('.status-badge');
                 if (statusBadge) {
                     statusBadge.className = `status-badge ${newStatus.toLowerCase()}`;
                     statusBadge.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
                 }
                 
-                // Update action buttons based on new status
                 const remarkActions = remarkCard.querySelector('.remark-actions');
                 if (remarkActions) {
-                    // Keep the status badge
                     const badgeHtml = `<div class="status-badge ${newStatus}">${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}</div>`;
                     
-                    // Create appropriate action buttons
                     let actionsHtml = badgeHtml;
                     
-                    // Only show approve button if status is not approved
                     if (newStatus !== 'approved') {
                         actionsHtml += `
                             <form method="POST" action="/instructor/update-remark/${requestId}">
@@ -175,7 +163,6 @@ function updateRemarkStatus(requestId, newStatus) {
                         `;
                     }
                     
-                    // Only show reject button if status is not rejected
                     if (newStatus !== 'rejected') {
                         actionsHtml += `
                             <form method="POST" action="/instructor/update-remark/${requestId}">
@@ -187,7 +174,6 @@ function updateRemarkStatus(requestId, newStatus) {
                         `;
                     }
                     
-                    // Show reset to pending button only if status is not pending
                     if (newStatus !== 'pending') {
                         actionsHtml += `
                             <form method="POST" action="/instructor/update-remark/${requestId}">
@@ -212,7 +198,6 @@ function updateRemarkStatus(requestId, newStatus) {
     });
 }
 
-// Dynamic update of feedback review status
 function markFeedbackReviewed(feedbackId) {
     fetch('/mark-feedback-reviewed', {
         method: 'POST',
@@ -226,11 +211,9 @@ function markFeedbackReviewed(feedbackId) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the UI
             const feedbackRow = document.getElementById(`feedback-${feedbackId}`);
             feedbackRow.classList.add('reviewed');
             
-            // Update the review button
             const reviewButton = document.getElementById(`review-button-${feedbackId}`);
             reviewButton.innerHTML = '<span class="badge badge-success">Reviewed</span>';
             reviewButton.disabled = true;
@@ -244,190 +227,165 @@ function markFeedbackReviewed(feedbackId) {
     });
 }
 
-const remarkForm = document.getElementById('remarkForm');
-if (remarkForm) {
-    remarkForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        fetch('/submit_remark', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Remark request submitted successfully!');
-                remarkForm.reset();
-                location.reload();
-            } else {
-                alert('Error submitting remark request: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error submitting remark request');
-        });
-    });
+const modal = document.getElementById('remarkModal');
+const assignmentIdInput = document.getElementById('assignment_id');
+
+function openRemarkModal(assignmentId) {
+    if (modal && assignmentIdInput) {
+        assignmentIdInput.value = assignmentId;
+        modal.style.display = 'block';
+    }
 }
 
-const feedbackForm = document.getElementById('feedbackForm');
-if (feedbackForm) {
-    feedbackForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        
-        fetch('/submit_feedback', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Feedback submitted successfully!');
-                feedbackForm.reset();
-            } else {
-                alert('Error submitting feedback: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error submitting feedback');
-        });
-    });
+function closeRemarkModal() {
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }
 
-const markForm = document.getElementById('markForm');
-if (markForm) {
-    markForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        fetch('/update_mark', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Mark updated successfully!');
-                location.reload();
-            } else {
-                alert('Error updating mark: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error updating mark');
-        });
-    });
+window.onclick = function(event) {
+    if (event.target == modal) {
+        closeRemarkModal();
+    }
 }
 
-const statusForm = document.getElementById('statusForm');
-if (statusForm) {
-    statusForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        fetch('/update_remark_status', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const remarkCard = document.querySelector(`[data-request-id="${data.request_id}"]`);
-                if (remarkCard) {
-                    remarkCard.classList.remove('pending', 'approved', 'rejected');
-                    remarkCard.classList.add(data.new_status);
-                    
-                    const statusBadge = remarkCard.querySelector('.status-badge');
-                    if (statusBadge) {
-                        statusBadge.textContent = data.new_status.charAt(0).toUpperCase() + data.new_status.slice(1);
-                        statusBadge.className = 'status-badge ' + data.new_status;
-                    }
-                    
-                    const actionsDiv = remarkCard.querySelector('.remark-actions');
-                    if (actionsDiv) {
-                        actionsDiv.innerHTML = '';
-                        
-                        if (data.new_status === 'pending') {
-                            const approveBtn = document.createElement('button');
-                            approveBtn.className = 'action-button approve';
-                            approveBtn.textContent = 'Approve';
-                            approveBtn.setAttribute('data-request-id', data.request_id);
-                            
-                            const rejectBtn = document.createElement('button');
-                            rejectBtn.className = 'action-button reject';
-                            rejectBtn.textContent = 'Reject';
-                            rejectBtn.setAttribute('data-request-id', data.request_id);
-                            
-                            actionsDiv.appendChild(approveBtn);
-                            actionsDiv.appendChild(rejectBtn);
-                        } else {
-                            const resetBtn = document.createElement('button');
-                            resetBtn.className = 'action-button reset';
-                            resetBtn.textContent = 'Reset to Pending';
-                            resetBtn.setAttribute('data-request-id', data.request_id);
-                            actionsDiv.appendChild(resetBtn);
-                        }
-                    }
+document.addEventListener('DOMContentLoaded', function() {
+    const moduleHeaders = document.querySelectorAll('.module-header');
+    moduleHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const module = this.closest('.lecture-module');
+            module.classList.toggle('module-active');
+        });
+    });
+    
+    if (moduleHeaders.length > 0) {
+        const firstModule = moduleHeaders[0].closest('.lecture-module');
+        firstModule.classList.add('module-active');
+    }
+    
+    const remarkForm = document.getElementById('remarkForm');
+    if (remarkForm) {
+        remarkForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const assignmentId = document.getElementById('assignment_id').value;
+            const reason = document.getElementById('reason').value;
+            
+            if (!reason.trim()) {
+                alert('Please provide a reason for your remark request');
+                return;
+            }
+            
+            fetch('/students/remark', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'assignment_id': assignmentId,
+                    'reason': reason
+                })
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.json();
                 }
-                alert('Status updated successfully!');
-            } else {
-                alert('Error updating status: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error updating status');
-        });
-    });
-}
-
-const reviewForm = document.getElementById('reviewForm');
-if (reviewForm) {
-    reviewForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(this);
-        
-        fetch('/update_feedback_status', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const feedbackCard = document.querySelector(`[data-feedback-id="${data.feedback_id}"]`);
-                if (feedbackCard) {
-                    feedbackCard.setAttribute('data-status', data.new_status);
-                    
-                    const statusBadge = feedbackCard.querySelector('.status-badge');
-                    if (statusBadge) {
-                        statusBadge.textContent = data.new_status.charAt(0).toUpperCase() + data.new_status.slice(1);
-                        statusBadge.className = 'status-badge ' + data.new_status;
-                    }
-                    
-                    const reviewBtn = feedbackCard.querySelector('.action-button');
-                    if (reviewBtn) {
-                        if (data.new_status === 'reviewed') {
-                            reviewBtn.textContent = 'Mark as Unreviewed';
-                            reviewBtn.className = 'action-button unreview';
-                        } else {
-                            reviewBtn.textContent = 'Mark as Reviewed';
-                            reviewBtn.className = 'action-button review';
-                        }
-                    }
+            })
+            .then(data => {
+                if (data && data.success) {
+                    alert('Remark request submitted successfully!');
+                    remarkForm.reset();
+                    closeRemarkModal();
+                    window.location.reload();
+                } else if (data) {
+                    alert('Error: ' + (data.message || 'Unknown error'));
                 }
-                alert('Status updated successfully!');
-            } else {
-                alert('Error updating status: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error updating status');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting remark request');
+            });
         });
-    });
-}
+    }
+    
+    const feedbackForm = document.getElementById('feedbackForm');
+    if (feedbackForm) {
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const instructor_id = document.getElementById('instructor-select').value;
+            const teaching_feedback = document.getElementById('teaching-feedback').value;
+            const teaching_improvement = document.getElementById('teaching-improvement').value;
+            const lab_feedback = document.getElementById('lab-feedback').value;
+            const lab_improvement = document.getElementById('lab-improvement').value;
+            
+            if (!instructor_id || !teaching_feedback || !teaching_improvement || !lab_feedback || !lab_improvement) {
+                alert('Please fill out all fields in the feedback form');
+                return;
+            }
+            
+            fetch('/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'instructor_id': instructor_id,
+                    'teaching_feedback': teaching_feedback,
+                    'teaching_improvement': teaching_improvement,
+                    'lab_feedback': lab_feedback,
+                    'lab_improvement': lab_improvement
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Feedback submitted successfully!');
+                    feedbackForm.reset();
+                    window.location.reload(); // Reload to show the flash message
+                } else {
+                    alert('Error submitting feedback');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting feedback');
+            });
+        });
+    }
+    
+    const filterButtons = document.querySelectorAll('.filter-button');
+    if (filterButtons.length > 0) {
+        const remarkCards = document.querySelectorAll('.remark-card');
+        const feedbackCards = document.querySelectorAll('.feedback-card');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.getAttribute('data-filter');
+                
+                if (remarkCards.length > 0) {
+                    remarkCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-status') === filter) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+                
+                if (feedbackCards.length > 0) {
+                    feedbackCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-reviewed') === filter) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+    }
+});

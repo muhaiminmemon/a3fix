@@ -10,42 +10,38 @@
 <body class="light-mode">
     <input type="checkbox" id="mobile-menu-toggle">
     <header class="sticky-header">
-        <div class="header-content">
+        <div class="logo">
             <h1>CSCB20</h1>
-            <nav>
-                {% if session.get('user_id') %}
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('home') }}">Home</a></li>
-                    <li><a href="{{ url_for('syllabus') }}">Syllabus</a></li>
-                    <li><a href="{{ url_for('lectures') }}">Lectures</a></li>
-                    <li><a href="{{ url_for('labs') }}">Labs</a></li>
-                    <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
-                    <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
-                    <li><a href="{{ url_for('team') }}">Course Team</a></li>
-                    {% if session.get('user_type') == 'student' %}
-                    <li><a href="{{ url_for('student_marks') }}">My Marks</a></li>
-                    <li><a href="{{ url_for('feedback') }}">Feedback</a></li>
-                    {% elif session.get('user_type') == 'instructor' %}
-                    <li><a href="{{ url_for('instructor_marks') }}">Student Marks</a></li>
-                    <li><a href="{{ url_for('instructor_feedback') }}">Feedback</a></li>
-                    <li><a href="{{ url_for('instructor_remark_requests') }}">Remark Requests</a></li>
-                    {% endif %}
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                </ul>
-                {% else %}
-                <ul class="nav-links">
-                    <li><a href="{{ url_for('home') }}">Home</a></li>
-                    <li><a href="{{ url_for('syllabus') }}">Syllabus</a></li>
-                    <li><a href="{{ url_for('lectures') }}">Lectures</a></li>
-                    <li><a href="{{ url_for('labs') }}">Labs</a></li>
-                    <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
-                    <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
-                    <li><a href="{{ url_for('team') }}">Course Team</a></li>
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                </ul>
-                {% endif %}
-            </nav>
         </div>
+        <nav>
+            {% if session.get('user_id') %}
+            <!-- Navigation for logged-in users -->
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('syllabus') }}">Syllabus</a></li>
+                <li><a href="{{ url_for('lectures') }}">Lectures</a></li>
+                <li><a href="{{ url_for('labs') }}">Labs</a></li>
+                <li><a href="{{ url_for('assignments') }}">Assignments</a></li>
+                <li><a href="{{ url_for('calendar') }}">Calendar</a></li>
+                <li><a href="{{ url_for('team') }}">Course Team</a></li>
+                
+                {% if session.get('role') == 'student' %}
+                <li><a href="{{ url_for('student_dashboard') }}">Dashboard</a></li>
+                {% elif session.get('role') == 'instructor' %}
+                <li><a href="{{ url_for('instructor_dashboard') }}">Dashboard</a></li>
+                {% endif %}
+                
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+            {% else %}
+            <!-- Navigation for non-logged-in users -->
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="{{ url_for('login') }}">Login</a></li>
+                <li><a href="{{ url_for('register') }}">Register</a></li>
+            </ul>
+            {% endif %}
+        </nav>
         <label for="mobile-menu-toggle" class="menu-toggle">
             <span></span>
             <span></span>
@@ -54,10 +50,10 @@
     </header>
 
     <div class="flash-messages">
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="flash-message">{{ message }}</div>
+                {% for category, message in messages %}
+                    <div class="flash-message {{ category }}">{{ message }}</div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
@@ -74,6 +70,7 @@
     </footer>
 
     {% block scripts %}{% endblock %}
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- Try both possible paths for script.js -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
